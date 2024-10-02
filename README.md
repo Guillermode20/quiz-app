@@ -38,8 +38,8 @@ The current functionality is very limited as the core features are still under d
 1. Open your web browser and go to `http://127.0.0.1:8000/`.
 2. Start taking quizzes and enjoy!
 
-Optional:
-1. Create an admin profile with python manage.py createsuperuser
+Optional (but recommended):
+1. Create an admin profile with ```python manage.py createsuperuser```
 2. From here you can manually add questions through the admin panel
 
 ## Contributing
