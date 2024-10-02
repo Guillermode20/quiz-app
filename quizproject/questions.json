@@ -1,0 +1,102 @@
+[
+{
+"question_text": "What is the capital city of Japan?",
+"correct_answer": "Tokyo",
+"option1": "Beijing",
+"option2": "Seoul",
+"option3": "Tokyo",
+"option4": "Bangkok",
+"category": "Geography",
+"completed": false
+},
+{
+"question_text": "Who wrote the play 'Romeo and Juliet'?",
+"correct_answer": "William Shakespeare",
+"option1": "Charles Dickens",
+"option2": "Jane Austen",
+"option3": "William Shakespeare",
+"option4": "Mark Twain",
+"category": "Literature",
+"completed": false
+},
+{
+"question_text": "What is the chemical symbol for gold?",
+"correct_answer": "Au",
+"option1": "Ag",
+"option2": "Fe",
+"option3": "Au",
+"option4": "Cu",
+"category": "Science",
+"completed": false
+},
+{
+"question_text": "In which year did World War II end?",
+"correct_answer": "1945",
+"option1": "1939",
+"option2": "1941",
+"option3": "1945",
+"option4": "1950",
+"category": "History",
+"completed": false
+},
+{
+"question_text": "What is the largest planet in our solar system?",
+"correct_answer": "Jupiter",
+"option1": "Mars",
+"option2": "Jupiter",
+"option3": "Saturn",
+"option4": "Neptune",
+"category": "Astronomy",
+"completed": false
+},
+{
+"question_text": "Who painted the Mona Lisa?",
+"correct_answer": "Leonardo da Vinci",
+"option1": "Vincent van Gogh",
+"option2": "Pablo Picasso",
+"option3": "Leonardo da Vinci",
+"option4": "Michelangelo",
+"category": "Art",
+"completed": false
+},
+{
+"question_text": "What is the main ingredient in guacamole?",
+"correct_answer": "Avocado",
+"option1": "Tomato",
+"option2": "Avocado",
+"option3": "Onion",
+"option4": "Lime",
+"category": "Food",
+"completed": false
+},
+{
+"question_text": "Which programming language is known for its use in AI and machine learning?",
+"correct_answer": "Python",
+"option1": "Java",
+"option2": "C++",
+"option3": "Python",
+"option4": "Ruby",
+"category": "Technology",
+"completed": false
+},
+{
+"question_text": "What is the national animal of Australia?",
+"correct_answer": "Red Kangaroo",
+"option1": "Koala",
+"option2": "Emu",
+"option3": "Dingo",
+"option4": "Red Kangaroo",
+"category": "Animals",
+"completed": false
+},
+{
+"question_text": "Who won the FIFA World Cup in 2022?",
+"correct_answer": "Argentina",
+"option1": "France",
+"option2": "Brazil",
+"option3": "Argentina",
+"option4": "Germany",
+"category": "Sports",
+"completed": false
+}
+]

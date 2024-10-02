@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Endless Quiz Web</h1>
+<p>you reached the end... ironic</p>
+<form method="post" action="{% url 'restart' %}">
+    {% csrf_token %}
+    <button type="submit" name="restart" value="true">Restart</button>
+</form>
+{% endblock %}

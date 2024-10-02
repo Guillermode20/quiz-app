@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Welcome to the Quiz App</h1>
-<p>Start your quiz journey here!</p>
+<h1>Endless Quiz Web</h1>
+<p>Question: {{ question_text }}</p>
+<form method="post">
+	{% csrf_token %}
+	<button type="submit" name="option" value="option1">{{ option1 }}</button>
+	<button type="submit" name="option" value="option2">{{ option2 }}</button>
+	<button type="submit" name="option" value="option3">{{ option3 }}</button>
+	<button type="submit" name="option" value="option4">{{ option4 }}</button>
+</form>
+<p>Completed: {{ completed }}</p>
+<p>Score:</p>
+
 {% endblock %}
