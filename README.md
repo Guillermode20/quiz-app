@@ -8,10 +8,19 @@ This project is a Django-based quiz application. It uses SQLite for the question
 - **SQLite**: Database for storing questions
 - **HTML**: Markup language for webpages
 - **Bootstrap 5**: CSS framework for styling
+- **ApexCharts.js**: 📊 Interactive JavaScript Charts built on SVG 
 
 ## Current Functionality
 
-The current functionality is very limited as the core features are still under development.
+Very basic quiz, with only 10 questions and an end screen which displays score.
+
+## To-do
+- Prevent manually refreshing from changing question
+    - could be done by preventing a question from being checked as "completed" only when answered
+- Add more questions and integrate the scoring into a separate window/on screen elsewhere
+- Beautify UI more (particularly buttons)
+- Add unit testing and proper logging
+- Add proper comments
 
 ## Installation
 
