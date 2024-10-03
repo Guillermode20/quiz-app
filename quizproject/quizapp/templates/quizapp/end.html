@@ -1,9 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Endless Quiz Web</h1>
-<p>you reached the end... ironic</p>
-<p>Final Score: {{ score }} out of {{ total_questions }}</p>
+<h1 class="text-light">Endless Quiz Web</h1>
+<p class="text-light">you reached the end... ironic</p>
+<div id="apexChart" style="width: 300px;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const options = {
+    series: [{{ score }}, {{ total_questions }} - {{ score }}],
+    chart: {
+      type: 'donut',
+      width: 300,
+      background: 'transparent'
+    },
+    labels: ['Correct', 'Incorrect'],
+    colors: ['#28a745', '#dc3545'],
+    title: {
+      text: 'Quiz Results',
+      align: 'center'
+    },
+    theme: {
+      mode: 'dark', // or 'light'
+      palette: 'palette1', // up to palette10
+      monochrome: {
+        enabled: false,
+        color: '#255aee',
+        shadeTo: 'light',
+        shadeIntensity: 0.65
+      }
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }]
+  };
+
+  const chart = new ApexCharts(document.querySelector("#apexChart"), options);
+  chart.render();
+});
+</script>
 <form method="post" action="{% url 'restart' %}">
     {% csrf_token %}
     <button type="submit" name="restart" value="true">Restart</button>

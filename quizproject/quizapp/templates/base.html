@@ -10,12 +10,13 @@
     <header>
         <!-- Add your header content here -->
     </header>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+          <div class="text-center">
+            {% block content %}{% endblock %}
+          </div>
+        </div>
+      </div>
     <footer>
         <!-- Add your footer content here -->
     </footer>
