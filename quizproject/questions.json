@@ -1,7 +1,7 @@
 [
 {
 "question_text": "What is the capital city of Japan?",
-"correct_answer": "Tokyo",
+"correct_answer": "option3",
 "option1": "Beijing",
 "option2": "Seoul",
 "option3": "Tokyo",
@@ -11,7 +11,7 @@
 },
 {
 "question_text": "Who wrote the play 'Romeo and Juliet'?",
-"correct_answer": "William Shakespeare",
+"correct_answer": "option3",
 "option1": "Charles Dickens",
 "option2": "Jane Austen",
 "option3": "William Shakespeare",
@@ -21,7 +21,7 @@
 },
 {
 "question_text": "What is the chemical symbol for gold?",
-"correct_answer": "Au",
+"correct_answer": "option3",
 "option1": "Ag",
 "option2": "Fe",
 "option3": "Au",
@@ -31,7 +31,7 @@
 },
 {
 "question_text": "In which year did World War II end?",
-"correct_answer": "1945",
+"correct_answer": "option3",
 "option1": "1939",
 "option2": "1941",
 "option3": "1945",
@@ -41,7 +41,7 @@
 },
 {
 "question_text": "What is the largest planet in our solar system?",
-"correct_answer": "Jupiter",
+"correct_answer": "option2",
 "option1": "Mars",
 "option2": "Jupiter",
 "option3": "Saturn",
@@ -51,7 +51,7 @@
 },
 {
 "question_text": "Who painted the Mona Lisa?",
-"correct_answer": "Leonardo da Vinci",
+"correct_answer": "option3",
 "option1": "Vincent van Gogh",
 "option2": "Pablo Picasso",
 "option3": "Leonardo da Vinci",
@@ -61,7 +61,7 @@
 },
 {
 "question_text": "What is the main ingredient in guacamole?",
-"correct_answer": "Avocado",
+"correct_answer": "option2",
 "option1": "Tomato",
 "option2": "Avocado",
 "option3": "Onion",
@@ -71,7 +71,7 @@
 },
 {
 "question_text": "Which programming language is known for its use in AI and machine learning?",
-"correct_answer": "Python",
+"correct_answer": "option3",
 "option1": "Java",
 "option2": "C++",
 "option3": "Python",
@@ -81,7 +81,7 @@
 },
 {
 "question_text": "What is the national animal of Australia?",
-"correct_answer": "Red Kangaroo",
+"correct_answer": "option4",
 "option1": "Koala",
 "option2": "Emu",
 "option3": "Dingo",
@@ -91,7 +91,7 @@
 },
 {
 "question_text": "Who won the FIFA World Cup in 2022?",
-"correct_answer": "Argentina",
+"correct_answer": "option3",
 "option1": "France",
 "option2": "Brazil",
 "option3": "Argentina",

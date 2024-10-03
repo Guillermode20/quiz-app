@@ -2,13 +2,13 @@
 
 {% block content %}
 <h1>Endless Quiz Web</h1>
-<p>Question: {{ question_text }}</p>
+<p>Question: {{ question.question_text }}</p>
 <form method="post" action="{% url 'checkAnswer' %}">
 	{% csrf_token %}
-	<button type="submit" name="option" value="option1">{{ option1 }}</button>
-	<button type="submit" name="option" value="option2">{{ option2 }}</button>
-	<button type="submit" name="option" value="option3">{{ option3 }}</button>
-	<button type="submit" name="option" value="option4">{{ option4 }}</button>
+	<button type="submit" name="option" value="option1">{{ question.option1 }}</button>
+	<button type="submit" name="option" value="option2">{{ question.option2 }}</button>
+	<button type="submit" name="option" value="option3">{{ question.option3 }}</button>
+	<button type="submit" name="option" value="option4">{{ question.option4 }}</button>
 </form>
 <p>Completed: {{ completed }}</p>
 <p>Score: {{ score }}</p>
