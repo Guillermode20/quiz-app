@@ -14,11 +14,16 @@ def get_selected_question():
         return random.choice(questions)
     return None
 
+def get_or_create_score():
+    score, created = Score.objects.get_or_create(id=1)
+    return score
+
 # View to load questions for the quiz
 def loadQuestions(request):
     selected_question = get_selected_question()
     if selected_question is None:
-        return render(request, 'quizapp/end.html')
+        total_questions = Question.objects.count()
+        return render(request, 'quizapp/end.html', context={'score': get_or_create_score().score, 'total_questions': total_questions})
     
     # Prepare question data for the template
     question = {
@@ -35,6 +40,7 @@ def loadQuestions(request):
     
     # Store the current question text in the session
     request.session['current_question_text'] = selected_question.question_text
+    score = get_or_create_score()
     
     return render(request, 'quizapp/home.html', context={'question': question, 'score': score.score})
 
@@ -52,7 +58,7 @@ def checkAnswer(request):
             current_question = Question.objects.get(question_text=current_question_text)
             
             if selected_option_key == current_question.correct_answer:
-                score, created = Score.objects.get_or_create(id=1)
+                score = get_or_create_score()
                 score.score += 1
                 score.save()
             
@@ -66,7 +72,7 @@ def checkAnswer(request):
             return redirect('home')
         except Question.DoesNotExist:
             return render(request, 'quizapp/end.html')
-
+                                                                
 # View to restart the quiz
 def restart(request):
     if request.method == 'POST':

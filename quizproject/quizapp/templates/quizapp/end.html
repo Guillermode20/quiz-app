@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Endless Quiz Web</h1>
 <p>you reached the end... ironic</p>
+<p>Final Score: {{ score }} out of {{ total_questions }}</p>
 <form method="post" action="{% url 'restart' %}">
     {% csrf_token %}
     <button type="submit" name="restart" value="true">Restart</button>
