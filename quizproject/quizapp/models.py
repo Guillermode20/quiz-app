@@ -15,3 +15,9 @@ class Question(models.Model):
     
     def __str__(self):
         return self.question_text
+    
+class Score(models.Model):
+    score = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return {self.score}

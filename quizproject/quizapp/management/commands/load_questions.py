@@ -14,6 +14,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         try:
+            # Delete all existing questions in the database to prevent overlap
+            Question.objects.all().delete()
+            self.stdout.write(self.style.SUCCESS('Deleted all existing questions'))
+            
+            # Load questions from JSON file
             with open('questions.json') as f:
                 questions_data = json.load(f)
                 random.shuffle(questions_data)
