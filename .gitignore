@@ -119,3 +119,12 @@ GitHub.sublime-settings
 # Personal additions
 *.swp
 *.swo
+
+# Docker files
+docker-compose.override.yml
+docker-compose.*.yml
+Dockerfile.*
+
+# Docker directories
+.docker/
+docker/
