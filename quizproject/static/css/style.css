@@ -6,14 +6,14 @@
     background-color: #2b2f33;
 }
 
-.btn {
-    font-size: 1.5vw;
-}
-
 .question-text-size {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
     align-self: center;
+}
+
+.dynamic-text {
+    font-size: 1.5em; 
 }

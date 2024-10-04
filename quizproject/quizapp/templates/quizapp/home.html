@@ -1,20 +1,39 @@
 {% extends 'base.html' %}
 
+<!-- Main Quiz Home screen template -->
 {% block content %}
 <h4>Endless Quiz Web</h4>
 <div class="container" style="max-width: 70%;">
-	<h2 class="question-text-size">{{ question.question_text }}</h2>
+    <h2 class="question-text-size">{{ question.question_text }}</h2>
 </div>
+<!-- Form for answering question, see checkAnswer function in views.py -->
 <form method="post" action="{% url 'checkAnswer' %}">
-	{% csrf_token %}
-	<div>
-		<button type="submit" name="option" value="option1" class="btn mid-dark rounded-4 shadow fixed-button-size m-2">{{ question.option1 }}</button>
-		<button type="submit" name="option" value="option2" class="btn mid-dark rounded-4 shadow fixed-button-size m-2">{{ question.option2 }}</button>
-	</div>
-	<div>
-		<button type="submit" name="option" value="option3" class="btn mid-dark rounded-4 shadow fixed-button-size m-2">{{ question.option3 }}</button>
-		<button type="submit" name="option" value="option4" class="btn mid-dark rounded-4 shadow fixed-button-size m-2">{{ question.option4 }}</button>
-	</div>
+    {% csrf_token %}
+    <div>
+        <button type="submit" name="option" value="option1" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option1 }}</button>
+        <button type="submit" name="option" value="option2" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option2 }}</button>
+    </div>
+    <div>
+        <button type="submit" name="option" value="option3" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option3 }}</button>
+        <button type="submit" name="option" value="option4" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option4 }}</button>
+    </div>
 </form>
 <h3>Score: {{ score }}</h3>
+
+<!-- Script to dynamically adjust button text size based on length -->
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const buttons = document.querySelectorAll('.option-button');
+		buttons.forEach(button => {
+			let textLength = button.textContent.length;
+			if (textLength > 20) {
+				button.style.fontSize = '10px';
+			} else if (textLength > 10) {
+				button.style.fontSize = '20px';
+			} else {
+				button.style.fontSize = '25px';
+			}
+		});
+	});
+	</script>
 {% endblock %}

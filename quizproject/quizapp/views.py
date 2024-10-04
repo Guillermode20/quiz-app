@@ -46,13 +46,23 @@ def loadQuestions(request):
 
 # View to check the user's answer
 def checkAnswer(request):
+    """
+    Handles the POST request to check the answer for the current question.
+    This function retrieves the selected answer from the POST request, compares it
+    with the correct answer for the current question, updates the score if the answer
+    is correct, marks the question as completed, and then redirects to the home page.
+    If the current question is not found in the session or the database, it redirects
+    to the home page or renders the end page.
+    Args:
+        request (HttpRequest): The HTTP request object containing POST data and session information.
+    Returns:
+        HttpResponse: A redirect to the home page or the end page based on the outcome.
+    """
     if request.method == 'POST':
         selected_option_key = request.POST.get('option').strip().lower()
         
         # Retrieve the current question using the text stored in the session
         current_question_text = request.session.get('current_question_text')
-        if current_question_text is None:
-            return redirect('home')
         
         try:
             current_question = Question.objects.get(question_text=current_question_text)
