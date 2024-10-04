@@ -10,10 +10,19 @@
 </head>
 <body>
     <header>
-        <!-- Add your header content here -->
+        <div>
+            <nav class="navbar navbar-dark bg-dark w-100">
+                <div class="container-fluid">
+                      <form method="post" action="{% url 'restart' %}">
+                        {% csrf_token %}
+                        <button type="submit" name="restart" value="true" class="btn mid-dark rounded shadow">Reset Quiz</button>
+                      </form>
+                </div>
+            </nav>
+        </div>
     </header>
-    <div class="container rounded-4 my-5 py-4">
-        <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="container rounded-4">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
           <div class="text-center">
             {% block content %}{% endblock %}
           </div>
