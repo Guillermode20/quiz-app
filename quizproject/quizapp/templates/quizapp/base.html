@@ -8,26 +8,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Quiz App{% endblock %}</title>
 </head>
+
 <body>
-    <header>
-        <div>
-            <nav class="navbar navbar-dark bg-dark w-100">
-                <div class="container-fluid">
-                      <form method="post" action="{% url 'restart' %}">
-                        {% csrf_token %}
-                        <button type="submit" name="restart" value="true" class="btn mid-dark rounded shadow">Reset Quiz</button>
-                      </form>
-                </div>
-            </nav>
-        </div>
-    </header>
+  <header>
+    {% block header %}
+      {% include 'quizapp/header.html' %}
+    {% endblock %}
+  </header>
+
+  <main>
     <div class="container rounded-4">
-        <div class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 10vh;">
           <div class="text-center">
             {% block content %}{% endblock %}
           </div>
         </div>
       </div>
+    </main>
     <footer>
         <!-- Add your footer content here -->
     </footer>

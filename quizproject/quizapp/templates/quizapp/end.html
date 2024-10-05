@@ -1,18 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'quizapp/base.html' %}
 
 <!--End screen template-->
 {% block content %}
-<h1 class="text-light">Endless Quiz Web</h1>
-<p class="text-light">you reached the end... ironic</p>
-<p class="text-light">Your score is {{ score }} out of {{ total_questions }}</p>
-<div id="apexChart" style="width: 300px;"></div>
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 10vh;">
+  <h1 class="text-light">Endless Quiz Web</h1>
+  <p class="text-light">You reached the end... ironic</p>
+  <p class="text-light">Your score is {{ score }} out of {{ total_questions }}</p>
+  <div id="apexChart" style="width: 300px;"></div>
 
-
-<!-- Generates a responsive and interactive chart based on your quiz results -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const options = {
+  <!-- Generates a responsive and interactive chart based on your quiz results -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const options = {
     series: [{{ score }}, {{ total_questions }} - {{ score }}],
     chart: {
       type: 'pie',
@@ -32,16 +32,17 @@ document.addEventListener('DOMContentLoaded', function() {
       position: 'bottom',
       horizontalAlign: 'center'
     }
-  };
+    };
 
-  const chart = new ApexCharts(document.querySelector("#apexChart"), options);
-  chart.render();
-});
-</script>
+    const chart = new ApexCharts(document.querySelector("#apexChart"), options);
+    chart.render();
+  });
+  </script>
 
-<!-- See 'restart' function in views.py -->
-<form method="post" action="{% url 'restart' %}">
+  <!-- See 'restart' function in views.py -->
+  <form method="post" action="{% url 'restart' %}">
     {% csrf_token %}
-    <button type="submit" name="restart" value="true" class="btn mid-dark rounded shadow">Restart</button>
-</form>
+    <button type="submit" name="restart" value="true" class="btn mid-dark rounded shadow my-4">Restart</button>
+  </form>
+</div>
 {% endblock %}

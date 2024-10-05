@@ -7,6 +7,9 @@ import logging
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+def startpage(request):
+    return render(request, 'quizapp/startpage.html')
+
 # Function to get a random uncompleted question
 def get_selected_question():
     questions = Question.objects.filter(completed=False)
@@ -67,7 +70,7 @@ def checkAnswer(request):
             # Clear the current question text from the session
             del request.session['current_question_text']
             
-            return redirect('home')
+            return redirect('loadQuestions')
         except Question.DoesNotExist:
             return render(request, 'quizapp/end.html')
                                                                 
@@ -79,4 +82,4 @@ def restart(request):
             Score.objects.update_or_create(id=1, defaults={'score': 0})
             if 'current_question_text' in request.session:
                 del request.session['current_question_text']
-            return redirect('home')
+            return redirect('loadQuestions')

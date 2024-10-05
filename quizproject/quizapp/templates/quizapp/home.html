@@ -1,7 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'quizapp/base.html' %}
+
+{% block header %}
+    {% include "quizapp/header.html" %}
+{% endblock %}	
 
 <!-- Main Quiz Home screen template -->
 {% block content %}
+
 <h4>Endless Quiz Web</h4>
 <div class="container" style="max-width: 70%;">
     <h2 class="question-text-size">{{ question.question_text }}</h2>
