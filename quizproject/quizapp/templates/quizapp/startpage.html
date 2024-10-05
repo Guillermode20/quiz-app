@@ -1,13 +1,13 @@
 {% extends "quizapp/base.html" %}
 
-{% block title %}Start Quiz{% endblock %}
+{% block header %}
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
+<div class="container mt-5" >
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="col-md-8 text-center">
-            <h1>Welcome to the Quiz App</h1>
-            <p>Test your knowledge with our fun and interactive quizzes!</p>
+            <h1>Welcome to Endless Quiz</h1>
             <a href="{% url 'loadQuestions' %}" class="btn mid-dark">Start Quiz</a>
         </div>
     </div>
