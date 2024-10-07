@@ -36,6 +36,7 @@ def loadQuestions(request):
         'option3': selected_question.option3,
         'option4': selected_question.option4,
         'completed': selected_question.completed,
+        'category': selected_question.category
     }
     
     # Get or create score entry
@@ -44,8 +45,24 @@ def loadQuestions(request):
     # Store the current question text in the session
     request.session['current_question_text'] = selected_question.question_text
     score = get_or_create_score()
+    completed_questions_count = Question.objects.filter(completed=True).count()
+    total_questions = Question.objects.count()
     
-    return render(request, 'quizapp/home.html', context={'question': question, 'score': score.score})
+    if completed_questions_count > 0:
+        correct_percentage = (score.score / completed_questions_count) * 100
+    else:
+        correct_percentage = 0
+        
+    correct_percentage = round(correct_percentage, 1)
+    
+    return render(request, 'quizapp/home.html', context={
+        'question': question,
+        'score': score.score,
+        'total_questions': total_questions,
+        'completed_questions_count': completed_questions_count,
+        'correct_percentage': correct_percentage,
+        'category': selected_question.category
+    })
 
 # View to check the user's answer
 def checkAnswer(request):

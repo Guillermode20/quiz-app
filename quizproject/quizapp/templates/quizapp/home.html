@@ -9,6 +9,7 @@
 
 <div class="container" style="max-width: 70%;">
     <h2 class="question-text-size">{{ question.question_text }}</h2>
+	<h4>Category: {{ question.category }}</h4>
 </div>
 <!-- Form for answering question, see checkAnswer function in views.py -->
 <form method="post" action="{% url 'checkAnswer' %}">
@@ -22,7 +23,7 @@
         <button type="submit" name="option" value="option4" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option4 }}</button>
     </div>
 </form>
-<h3>Score: {{ score }}</h3>
+<h4>Questions correct: {{ correct_percentage }}% </h4>
 
 <!-- Script to dynamically adjust button text size based on length -->
 <script>
