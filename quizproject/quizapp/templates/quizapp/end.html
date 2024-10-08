@@ -1,0 +1,47 @@
+{% extends 'quizapp/base.html' %}
+
+<!--End screen template-->
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 10vh;">
+  <p class="text-light">You reached the end... ironic</p>
+  <p class="text-light">Your score is {{ score }} out of {{ total_questions }}</p>
+  <div id="apexChart" style="width: 300px;"></div>
+
+  <!-- Generates a responsive and interactive chart based on your quiz results -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const options = {
+    series: [{{ score }}, {{ total_questions }} - {{ score }}],
+    chart: {
+      type: 'pie',
+      width: 300,
+      background: 'transparent'
+    },
+    labels: ['Correct', 'Incorrect'],
+    colors: ['#28a745', '#dc3545'],
+    title: {
+      text: 'Quiz Results',
+      align: 'center'
+    },
+    theme: {
+      mode: 'dark', // or 'light'
+    },
+    legend: {
+      position: 'bottom',
+      horizontalAlign: 'center'
+    }
+    };
+
+    const chart = new ApexCharts(document.querySelector("#apexChart"), options);
+    chart.render();
+  });
+  </script>
+
+  <!-- See 'restart' function in views.py -->
+  <form method="post" action="{% url 'restart' %}">
+    {% csrf_token %}
+    <button type="submit" name="restart" value="true" class="btn mid-dark rounded shadow my-4">Restart</button>
+  </form>
+</div>
+{% endblock %}

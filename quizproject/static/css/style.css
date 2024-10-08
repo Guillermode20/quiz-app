@@ -1,0 +1,19 @@
+.fixed-button-size {
+    width: 150px;
+    height: 100px;
+}
+.mid-dark {
+    background-color: #2b2f33;
+}
+
+.question-text-size {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    align-self: center;
+}
+
+.dynamic-text {
+    font-size: 1.5em; 
+}

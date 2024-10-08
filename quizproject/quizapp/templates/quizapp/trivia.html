@@ -1,0 +1,45 @@
+{% extends 'quizapp/base.html' %}
+
+{% block header %}
+    {% include "quizapp/header.html" %}
+{% endblock %}	
+
+<!-- Main Quiz Home screen template -->
+{% block content %}
+
+<div class="container" style="max-width: 70%;">
+    <a href="https://opentdb.com/">Fetched from the Open Trivia Database</a>
+    <h2 class="question-text-size">{{ trivia_question_text }}</h2>
+	<h4>Category: {{ trivia_category }}</h4>
+</div>
+<!-- Form for answering question, see checkAnswer function in views.py -->
+<form method="post" action="{% url 'checkAnswer' %}">
+    {% csrf_token %}
+    <div>
+        <button type="submit" name="option" value="option1" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.0 }}</button>
+        <button type="submit" name="option" value="option2" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.1 }}</button>
+    </div>
+    <div>
+        <button type="submit" name="option" value="option3" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.2 }}</button>
+        <button type="submit" name="option" value="option4" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.3 }}</button>
+    </div>
+</form>
+<h4>Questions correct: {{ correct_percentage }}% </h4>
+
+<!-- Script to dynamically adjust button text size based on length -->
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const buttons = document.querySelectorAll('.option-button');
+		buttons.forEach(button => {
+			let textLength = button.textContent.length;
+			if (textLength > 20) {
+				button.style.fontSize = '10px';
+			} else if (textLength > 10) {
+				button.style.fontSize = '20px';
+			} else {
+				button.style.fontSize = '25px';
+			}
+		});
+	});
+	</script>
+{% endblock %}
