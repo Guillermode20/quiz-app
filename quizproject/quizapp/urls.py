@@ -6,4 +6,5 @@ urlpatterns = [
     path('restart/', views.restart, name='restart'),
     path('checkAnswer/', views.checkAnswer, name='checkAnswer'),
     path('', views.startpage, name='startpage'),
+    path('trivia/', views.get_trivia_questions, name='trivia'),
     ]

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import Question, Score
 import random
 import logging
+import requests
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -20,6 +21,24 @@ def get_selected_question():
 def get_or_create_score():
     score, created = Score.objects.get_or_create(id=1)
     return score
+
+def get_trivia_questions(request):
+    url = "https://opentdb.com/api.php"
+    
+    params = {
+        'amount': 1,
+        'type': 'multiple'
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        trivia_data = response.json()
+        trivia_questions = trivia_data['results']
+        
+        return render(request, 'quizapp/trivia.html', context={'trivia_questions': trivia_questions})
+    else:
+        return HttpResponse('Failed to fetch trivia questions')
 
 # View to load questions for the quiz
 def loadQuestions(request):
