@@ -47,6 +47,8 @@ def get_trivia_questions(request):
             all_answers = trivia_incorrect_answers + [trivia_correct_answer] # necessary so buttons can be randomly populated with options
             random.shuffle(all_answers)
             
+            request.session['trivia_correct_answer'] = trivia_correct_answer
+            
             return render(request, 'quizapp/trivia.html', context={
                 'trivia_question_text': trivia_question_text, 
                 'trivia_correct_answer': trivia_correct_answer,
@@ -57,6 +59,20 @@ def get_trivia_questions(request):
             return HttpResponse('No trivia questions found')
     else:
         return HttpResponse('Failed to fetch trivia questions')
+
+def check_trivia_answer(request):
+    if request.method == 'POST':
+        selected_option = request.POST.get('option').strip().lower()
+        trivia_correct_answer = request.session.get('trivia_correct_answer').strip().lower()
+        
+        if trivia_correct_answer == selected_option:
+            score = get_or_create_score()
+            score.score += 1
+            score.save()
+        
+        return redirect('trivia')
+    else:
+        return HttpResponse('Invalid request')
 
 # View to load questions for the quiz
 def loadQuestions(request):
@@ -136,4 +152,4 @@ def restart(request):
             Score.objects.update_or_create(id=1, defaults={'score': 0})
             if 'current_question_text' in request.session:
                 del request.session['current_question_text']
-            return redirect('loadQuestions')
+            return redirect('trivia')

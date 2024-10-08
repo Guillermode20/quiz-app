@@ -13,7 +13,7 @@
 	<h4>Category: {{ trivia_category }}</h4>
 </div>
 <!-- Form for answering question, see checkAnswer function in views.py -->
-<form method="post" action="{% url 'checkAnswer' %}">
+<form method="post" action="{% url 'check_trivia_answer' %}">
     {% csrf_token %}
     <div>
         <button type="submit" name="option" value="option1" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.0 }}</button>
@@ -24,7 +24,7 @@
         <button type="submit" name="option" value="option4" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ trivia_answers.3 }}</button>
     </div>
 </form>
-<h4>Questions correct: {{ correct_percentage }}% </h4>
+<h4>Questions correct: {{ score }}% </h4>
 
 <!-- Script to dynamically adjust button text size based on length -->
 <script>
