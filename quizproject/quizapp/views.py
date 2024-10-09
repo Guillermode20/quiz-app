@@ -5,6 +5,7 @@ import random
 import logging
 import requests
 import html
+import time
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -25,50 +26,67 @@ def get_or_create_score():
 
 def get_trivia_questions(request):
     url = "https://opentdb.com/api.php"
-    
     params = {
-        'amount': 1,
+        'amount': 3,
         'type': 'multiple',
         'difficulty': 'easy'
     }
     
-    response = requests.get(url, params=params)
-    
-    if response.status_code == 200:
-        trivia_data = response.json()
-        trivia_questions = trivia_data['results']
+    max_retries = 3
+    for attempt in range(max_retries):
+        response = requests.get(url, params=params)
         
-        if trivia_questions:
-            trivia_question_text = html.unescape(trivia_questions[0]['question'])
-            trivia_correct_answer = html.unescape(trivia_questions[0]['correct_answer'])
-            trivia_incorrect_answers = [html.unescape(answer) for answer in trivia_questions[0]['incorrect_answers']]
-            trivia_category = html.unescape(trivia_questions[0]['category'])
+        if response.status_code == 200:
+            trivia_data = response.json()
+            trivia_questions = trivia_data['results']
             
-            all_answers = trivia_incorrect_answers + [trivia_correct_answer] # necessary so buttons can be randomly populated with options
-            random.shuffle(all_answers)
-            
-            request.session['trivia_correct_answer'] = trivia_correct_answer
-            
-            return render(request, 'quizapp/trivia.html', context={
-                'trivia_question_text': trivia_question_text, 
-                'trivia_correct_answer': trivia_correct_answer,
-                'trivia_answers': all_answers,
-                'trivia_category': trivia_category
-            })
+            if trivia_questions:
+                trivia_question_text = html.unescape(trivia_questions[0]['question'])
+                trivia_correct_answer = html.unescape(trivia_questions[0]['correct_answer'])
+                trivia_incorrect_answers = [html.unescape(answer) for answer in trivia_questions[0]['incorrect_answers']]
+                trivia_category = html.unescape(trivia_questions[0]['category'])
+                
+                all_answers = trivia_incorrect_answers + [trivia_correct_answer]
+                random.shuffle(all_answers)
+                
+                answer_mapping = {f'option{i+1}': answer for i, answer in enumerate(all_answers)}
+                request.session['trivia_answer_mapping'] = answer_mapping
+                request.session['trivia_correct_answer'] = trivia_correct_answer
+                
+                current_score = request.session.get('current_score')
+                
+                return render(request, 'quizapp/trivia.html', context={
+                    'trivia_question_text': trivia_question_text, 
+                    'trivia_correct_answer': trivia_correct_answer,
+                    'trivia_answers': all_answers,
+                    'trivia_category': trivia_category,
+                    'current_score': current_score
+                })
+            else:
+                time.sleep(3)
         else:
-            return HttpResponse('No trivia questions found')
-    else:
-        return HttpResponse('Failed to fetch trivia questions')
+            time.sleep(3)
+    
+    return HttpResponse('Failed to fetch trivia questions after multiple attempts')
 
 def check_trivia_answer(request):
     if request.method == 'POST':
         selected_option = request.POST.get('option').strip().lower()
+        answer_mapping = request.session.get('trivia_answer_mapping')
         trivia_correct_answer = request.session.get('trivia_correct_answer').strip().lower()
         
-        if trivia_correct_answer == selected_option:
+        if answer_mapping is None:
+            return HttpResponse('Error: Answer mapping not found in session')
+
+        # Determine the selected answer using the mapping
+        selected_answer = answer_mapping.get(selected_option)
+        
+        if selected_answer and selected_answer.strip().lower() == trivia_correct_answer:
             score = get_or_create_score()
             score.score += 1
             score.save()
+            print(score.score)
+            request.session['current_score'] = score.score
         
         return redirect('trivia')
     else:

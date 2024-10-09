@@ -1,6 +1,6 @@
 .fixed-button-size {
-    width: 150px;
-    height: 100px;
+    width: 300px;
+    height: 150px;  
 }
 .mid-dark {
     background-color: #2b2f33;
@@ -16,4 +16,8 @@
 
 .dynamic-text {
     font-size: 1.5em; 
+}
+
+.full-height-container {
+    min-height : 0vh;
 }
