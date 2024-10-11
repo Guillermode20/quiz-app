@@ -12,11 +12,14 @@ from django.core.cache import cache
 logger = logging.getLogger(__name__)
 
 def startpage(request):
+    # Initialize the score in the session if it doesn't exist
+    if 'score' not in request.session:
+        request.session['score'] = 0
     return render(request, 'quizapp/startpage.html')
 
-def get_or_create_score():
-    score, created = Score.objects.get_or_create(id=1)
-    return score
+def get_or_create_score(request):
+    score = request.COOKIES.get('score', 0)
+    return int(score) 
 
 def fetch_trivia_questions(amount=10):
     url = "https://opentdb.com/api.php"
@@ -97,7 +100,7 @@ def get_trivia_questions(request):
         request.session['trivia_answer_mapping'] = answer_mapping
         request.session['trivia_correct_answer'] = question['correct_answer']
         
-        current_score = request.session.get('current_score', 0)
+        current_score = request.session.get('score', 0)
         
         return render(request, 'quizapp/trivia.html', context={
             'trivia_question_text': question['question_text'], 
@@ -123,10 +126,10 @@ def check_trivia_answer(request):
         selected_answer = answer_mapping.get(selected_option, '').strip().lower()
         
         if selected_answer == trivia_correct_answer:
-            score = get_or_create_score()
-            score.score += 1
-            score.save()
-            request.session['current_score'] = score.score
+            score = request.session.get('score', 0)
+            score += 1
+            request.session['score'] = score
+            request.session.save()  # Explicitly save the session
         
         return redirect('trivia')
     else:
@@ -136,7 +139,7 @@ def loadQuestions(request):
     ensure_question_cache()
     question = get_next_question()
     if question is None:
-        return render(request, 'quizapp/end.html', context={'score': get_or_create_score().score})
+        return render(request, 'quizapp/end.html', context={'score': request.session.get('score', 0)})
     
     question_data = {
         'question_text': question['question_text'],
@@ -147,13 +150,13 @@ def loadQuestions(request):
         'category': question['category']
     }
     
-    score = get_or_create_score()
+    score = request.session.get('score', 0)
     request.session['current_question'] = question
     
     answered_questions_count = request.session.get('answered_questions_count', 0)
     
     if answered_questions_count > 0:
-        correct_percentage = (score.score / answered_questions_count) * 100
+        correct_percentage = (score / answered_questions_count) * 100
     else:
         correct_percentage = 0
         
@@ -161,7 +164,7 @@ def loadQuestions(request):
     
     return render(request, 'quizapp/home.html', context={
         'question': question_data,
-        'score': score.score,
+        'score': score,
         'answered_questions_count': answered_questions_count,
         'correct_percentage': correct_percentage,
         'category': question['category']
@@ -174,12 +177,14 @@ def checkAnswer(request):
         
         if current_question:
             if selected_option == current_question.get('correct_answer', '').strip().lower():
-                score = get_or_create_score()
-                score.score += 1
-                score.save()
+                score = request.session.get('score', 0)
+                score += 1
+                request.session['score'] = score
+                request.session.save()  # Explicitly save the session
             
             answered_questions_count = request.session.get('answered_questions_count', 0)
             request.session['answered_questions_count'] = answered_questions_count + 1
+            request.session.save()  # Explicitly save the session
             
             del request.session['current_question']
             return redirect('loadQuestions')
@@ -190,13 +195,19 @@ def checkAnswer(request):
 def trivia_restart(request):
     if request.method == 'POST':
         if 'restart' in request.POST:
-            request.session['current_score'] = 0
+            request.session['score'] = 0
             request.session['answered_questions_count'] = 0
+            request.session.save()  # Explicitly save the session
             cache.delete('trivia_questions')
             ensure_question_cache()
             
-            score = get_or_create_score()
-            score.score = 0
-            score.save()
-            
             return redirect('trivia')
+        
+def stats(request):
+    current_score = request.session.get('score', 0)
+    answered_questions_count = request.session.get('answered_questions_count', 0)
+    context = {
+        'current_score': current_score,
+        'answered_questions_count': answered_questions_count
+    }
+    return render(request, 'quizapp/stats.html', context=context)

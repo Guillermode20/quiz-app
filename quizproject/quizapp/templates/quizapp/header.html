@@ -11,7 +11,7 @@
                     {% csrf_token %}
                     <button type="submit" name="restart" value="true" class="btn btn-dark rounded shadow me-3 ms-3">Restart</button>
                 </form>
-                <a>
+                <a href="{% url 'stats' %}">
                     <button type="button" class="btn btn-dark rounded shadow me-3">Stats</button>
                 </a>
             </div>
