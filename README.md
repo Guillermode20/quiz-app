@@ -2,6 +2,8 @@
 
 This project is a Django-based quiz application. It uses SQLite for the questions database, HTML for the webpages, and Bootstrap 5 for styling.
 
+This is a fork of my original project that replaces the local database with fetching trivia questions from the [Open Trivia Database](https://opentdb.com/). 
+
 ## Technologies Used
 
 - **Django**: Backend framework
@@ -58,3 +60,13 @@ Feel free to fork the repository and submit pull requests. Any contributions are
 ## License
 
 This project is licensed under the MIT License.
+
+Data from this repository is available under the [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+
+### Attribution
+
+Data sourced from the [Open Trivia Database](https://opentdb.com/) is licensed under CC BY-SA 4.0. You can find more information at: https://opentdb.com/.
+
+### Modifications
+
+If any modifications were made to the original data, they are described in this repository's documentation or in relevant files.

@@ -12,7 +12,7 @@
 	<h4>Category: {{ question.category }}</h4>
 </div>
 <!-- Form for answering question, see checkAnswer function in views.py -->
-<form method="post" action="{% url 'checkAnswer' %}">
+<form method="post" action="{% url 'check_trivia_answer' %}">
     {% csrf_token %}
     <div>
         <button type="submit" name="option" value="option1" class="btn mid-dark rounded-4 shadow fixed-button-size m-2 dynamic-text option-button">{{ question.option1 }}</button>

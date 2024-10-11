@@ -1,0 +1,20 @@
+{% extends "quizapp/base.html" %}
+
+{% block header %}
+    {% include "quizapp/header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container" >
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-md-8 text-center">
+            <h1>Stats</h1>
+            <h3>Questions answered: {{ questions_answered_count }}</h3>
+            <h3>Questions correct: {{ current_score }}</h3>
+            <h3>Questions incorrect: {{ questions_answered_incorrectly }}</h3>
+            <h3>Accuracy: {{ accuracy_percentage }}%</h3>
+            <a> <a href="{% url 'trivia' %}" class="btn my-3 btn-dark shadow my-2">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
