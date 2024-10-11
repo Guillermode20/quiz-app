@@ -11,52 +11,65 @@ from django.core.cache import cache
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+
 def startpage(request):
     # Initialize the score in the session if it doesn't exist
-    if 'score' not in request.session:
-        request.session['score'] = 0
-    return render(request, 'quizapp/startpage.html')
+    if "score" not in request.session:
+        request.session["score"] = 0
+    if "answered_questions" not in request.session:
+        request.session["answered_questions"] = []
+    if "questions_answered_count" not in request.session:
+        request.session["questions_answered_count"] = 0
+    return render(request, "quizapp/startpage.html")
+
 
 def get_or_create_score(request):
-    score = request.COOKIES.get('score', 0)
-    return int(score) 
+    score = request.COOKIES.get("score", 0)
+    return int(score)
+
 
 def fetch_trivia_questions(amount=10):
     url = "https://opentdb.com/api.php"
-    params = {
-        'amount': amount,
-        'type': 'multiple',
-        'difficulty': 'easy'
-    }
-    
+    params = {"amount": amount, "type": "multiple", "difficulty": "easy"}
+
     max_retries = 3
     for attempt in range(max_retries):
         try:
             response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
-            
+
             trivia_data = response.json()
-            trivia_questions = trivia_data['results']
-            
+            trivia_questions = trivia_data["results"]
+
             if trivia_questions:
                 processed_questions = []
                 for question in trivia_questions:
-                    trivia_question_text = html.unescape(question['question'])
-                    trivia_correct_answer = html.unescape(question['correct_answer'])
-                    trivia_incorrect_answers = [html.unescape(answer) for answer in question['incorrect_answers']]
-                    trivia_category = html.unescape(question['category'])
-                    
+                    trivia_question_text = html.unescape(question["question"])
+                    trivia_correct_answer = html.unescape(question["correct_answer"])
+                    trivia_incorrect_answers = [
+                        html.unescape(answer)
+                        for answer in question["incorrect_answers"]
+                    ]
+                    trivia_category = html.unescape(question["category"])
+
                     all_answers = trivia_incorrect_answers + [trivia_correct_answer]
                     random.shuffle(all_answers)
-                    
-                    processed_questions.append({
-                        'question_text': trivia_question_text,
-                        'correct_answer': trivia_correct_answer,
-                        'answers': all_answers,
-                        'category': trivia_category,
-                    })
-                
-                logger.info(f"Successfully fetched {len(processed_questions)} questions")
+
+                    processed_questions.append(
+                        {
+                            "category_id": trivia_category,
+                            "lang": "en",
+                            "question": trivia_question_text,
+                            "answer": all_answers.index(trivia_correct_answer),
+                            "tags": [trivia_category],
+                            "answers": all_answers,
+                            "source": "OpenTDB",
+                        }
+                    )
+
+                logger.info(
+                    f"Successfully fetched {len(processed_questions)} questions"
+                )
                 return processed_questions
             else:
                 logger.warning("API returned no questions")
@@ -64,150 +77,149 @@ def fetch_trivia_questions(amount=10):
             logger.error(f"Request failed: {str(e)}")
         except (KeyError, ValueError) as e:
             logger.error(f"Error processing API response: {str(e)}")
-        
+
         logger.info(f"Retrying... (attempt {attempt + 1} of {max_retries})")
         time.sleep(3)
-    
+
     logger.error("Failed to fetch questions after all retries")
     return []
 
+
 def ensure_question_cache():
-    cached_questions = cache.get('trivia_questions', [])
+    cached_questions = cache.get("trivia_questions", [])
     logger.info(f"Current cache size: {len(cached_questions)}")
     if len(cached_questions) < 3:
         logger.info("Fetching new questions for cache")
         new_questions = fetch_trivia_questions()
         cached_questions.extend(new_questions)
-        cache.set('trivia_questions', cached_questions)
+        cache.set("trivia_questions", cached_questions)
         logger.info(f"Updated cache size: {len(cached_questions)}")
 
-def get_next_question():
-    cached_questions = cache.get('trivia_questions', [])
-    if cached_questions:
-        question = cached_questions.pop(0)
-        cache.set('trivia_questions', cached_questions)
-        ensure_question_cache()
-        return question
-    logger.warning("No questions in cache")
-    return None
+
+def get_next_question(request):
+    cached_questions = cache.get("trivia_questions", [])
+    answered_questions = request.session.get("answered_questions", [])
+
+    for question in cached_questions:
+        question_id = f"{question['category_id']}:{question['question']}"
+        if question_id not in answered_questions:
+            cached_questions.remove(question)
+            cache.set("trivia_questions", cached_questions)
+            ensure_question_cache()
+            return question, question_id
+
+    logger.warning("No new questions available")
+    return None, None
+
 
 def get_trivia_questions(request):
     ensure_question_cache()
-    question = get_next_question()
-    
+    question, question_id = get_next_question(request)
+
     if question:
-        answer_mapping = {f'option{i+1}': answer for i, answer in enumerate(question['answers'])}
-        request.session['trivia_answer_mapping'] = answer_mapping
-        request.session['trivia_correct_answer'] = question['correct_answer']
-        
-        current_score = request.session.get('score', 0)
-        
-        return render(request, 'quizapp/trivia.html', context={
-            'trivia_question_text': question['question_text'], 
-            'trivia_correct_answer': question['correct_answer'],
-            'trivia_answers': question['answers'],
-            'trivia_category': question['category'],
-            'current_score': current_score
-        })
+        request.session["trivia_answer_mapping"] = question["answers"]
+        request.session["trivia_correct_answer"] = question["answers"][
+            question["answer"]
+        ]
+        request.session["current_question_id"] = question_id
+
+        context = {
+            "trivia_question_text": question["question"],
+            "trivia_correct_answer": question["answers"][question["answer"]],
+            "trivia_answers": question["answers"],
+            "trivia_category": question["category_id"],
+        }
+
+        # Get the stats context and update the main context
+        stats_context = get_stats_context(request)
+        context.update(stats_context)
+
+        return render(request, "quizapp/trivia.html", context=context)
     else:
         logger.error("Failed to get next question")
-        return HttpResponse('Failed to fetch trivia questions. Please try again later.')
+        return HttpResponse("No more questions available. Please try again later.")
+
 
 def check_trivia_answer(request):
-    if request.method == 'POST':
-        selected_option = request.POST.get('option', '').strip().lower()
-        answer_mapping = request.session.get('trivia_answer_mapping', {})
-        trivia_correct_answer = request.session.get('trivia_correct_answer', '').strip().lower()
-        
+    if request.method == "POST":
+        selected_option = request.POST.get("option", "")
+        answer_mapping = request.session.get("trivia_answer_mapping", [])
+        trivia_correct_answer = (
+            request.session.get("trivia_correct_answer", "").strip().lower()
+        )
+
         if not answer_mapping:
             logger.error("Answer mapping not found in session")
-            return HttpResponse('Error: Answer mapping not found in session')
+            return HttpResponse("Error: Answer mapping not found in session")
 
-        selected_answer = answer_mapping.get(selected_option, '').strip().lower()
-        
+        # Extract the index from the option string (e.g., 'option2' -> 1)
+        try:
+            selected_index = int(selected_option.replace("option", "")) - 1
+            if 0 <= selected_index < len(answer_mapping):
+                selected_answer = answer_mapping[selected_index].strip().lower()
+            else:
+                logger.error(f"Invalid selected index: {selected_index}")
+                return HttpResponse("Error: Invalid answer selection")
+        except ValueError:
+            logger.error(f"Invalid option format: {selected_option}")
+            return HttpResponse("Error: Invalid answer format")
+
         if selected_answer == trivia_correct_answer:
-            score = request.session.get('score', 0)
+            score = request.session.get("score", 0)
             score += 1
-            request.session['score'] = score
-            request.session.save()  # Explicitly save the session
-        
-        return redirect('trivia')
-    else:
-        return HttpResponse('Invalid request')
+            request.session["score"] = score
 
-def loadQuestions(request):
-    ensure_question_cache()
-    question = get_next_question()
-    if question is None:
-        return render(request, 'quizapp/end.html', context={'score': request.session.get('score', 0)})
-    
-    question_data = {
-        'question_text': question['question_text'],
-        'option1': question['answers'][0],
-        'option2': question['answers'][1],
-        'option3': question['answers'][2],
-        'option4': question['answers'][3],
-        'category': question['category']
-    }
-    
-    score = request.session.get('score', 0)
-    request.session['current_question'] = question
-    
-    answered_questions_count = request.session.get('answered_questions_count', 0)
-    
-    if answered_questions_count > 0:
-        correct_percentage = (score / answered_questions_count) * 100
-    else:
-        correct_percentage = 0
-        
-    correct_percentage = round(correct_percentage, 1)
-    
-    return render(request, 'quizapp/home.html', context={
-        'question': question_data,
-        'score': score,
-        'answered_questions_count': answered_questions_count,
-        'correct_percentage': correct_percentage,
-        'category': question['category']
-    })
+        # Add the current question to the answered questions list
+        answered_questions = request.session.get("answered_questions", [])
+        current_question_id = request.session.get("current_question_id")
+        if current_question_id:
+            answered_questions.append(current_question_id)
+            request.session["answered_questions"] = answered_questions
 
-def checkAnswer(request):
-    if request.method == 'POST':
-        selected_option = request.POST.get('option', '').strip().lower()
-        current_question = request.session.get('current_question', {})
-        
-        if current_question:
-            if selected_option == current_question.get('correct_answer', '').strip().lower():
-                score = request.session.get('score', 0)
-                score += 1
-                request.session['score'] = score
-                request.session.save()  # Explicitly save the session
-            
-            answered_questions_count = request.session.get('answered_questions_count', 0)
-            request.session['answered_questions_count'] = answered_questions_count + 1
-            request.session.save()  # Explicitly save the session
-            
-            del request.session['current_question']
-            return redirect('loadQuestions')
-        else:
-            logger.error("Current question not found in session")
-            return render(request, 'quizapp/end.html')
+        # Increment the questions answered count
+        questions_answered_count = request.session.get("questions_answered_count", 0)
+        questions_answered_count += 1
+        request.session["questions_answered_count"] = questions_answered_count
+
+        request.session.save()  # Explicitly save the session
+        return redirect("trivia")
+    else:
+        return HttpResponse("Invalid request")
+
 
 def trivia_restart(request):
-    if request.method == 'POST':
-        if 'restart' in request.POST:
-            request.session['score'] = 0
-            request.session['answered_questions_count'] = 0
+    if request.method == "POST":
+        if "restart" in request.POST:
+            request.session["score"] = 0
+            request.session["answered_questions"] = []
+            request.session["questions_answered_count"] = 0
             request.session.save()  # Explicitly save the session
-            cache.delete('trivia_questions')
+            cache.delete("trivia_questions")
             ensure_question_cache()
-            
-            return redirect('trivia')
-        
-def stats(request):
-    current_score = request.session.get('score', 0)
-    answered_questions_count = request.session.get('answered_questions_count', 0)
-    context = {
-        'current_score': current_score,
-        'answered_questions_count': answered_questions_count
+
+            return redirect("trivia")
+
+
+def get_stats_context(request):
+    current_score = request.session.get("score", 0)
+    questions_answered_count = request.session.get("questions_answered_count", 0)
+    questions_answered_incorrectly = questions_answered_count - current_score
+    accuracy_percentage = (
+        (current_score / questions_answered_count) * 100
+        if questions_answered_count > 0
+        else 0
+    )
+
+    accuracy_percentage = round(accuracy_percentage, 1)
+
+    return {
+        "current_score": current_score,
+        "questions_answered_count": questions_answered_count,
+        "questions_answered_incorrectly": questions_answered_incorrectly,
+        "accuracy_percentage": accuracy_percentage,
     }
-    return render(request, 'quizapp/stats.html', context=context)
+
+
+def stats(request):
+    context = get_stats_context(request)
+    return render(request, "quizapp/stats.html", context)
