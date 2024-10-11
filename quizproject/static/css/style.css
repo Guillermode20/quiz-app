@@ -1,19 +1,29 @@
 .fixed-button-size {
-    width: 150px;
-    height: 100px;
+    width: 300px;
+    height: 150px;  
 }
 .mid-dark {
     background-color: #2b2f33;
 }
 
 .question-text-size {
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-width: 100%;
-    align-self: center;
-}
+    font-size: 2em;
+}   
 
 .dynamic-text {
     font-size: 1.5em; 
+}
+
+.full-height-container {
+    min-height : 0vh;
+}
+
+.fixed-height-container {
+    height: 125px; /* Adjust the height as needed */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    display: flex;
+    align-items: center; /* Center the text vertically */
+    justify-content: center; /* Center the text horizontally */
+    text-align: center; /* Center the text */
 }
