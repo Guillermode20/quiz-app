@@ -1,4 +1,5 @@
 # Quiz App
+Playable version, hosted by Python Anywhere: [Play](https://guillermode20.pythonanywhere.com/)
 
 This project is a Django-based quiz application. It uses SQLite for the questions database, HTML for the webpages, and Bootstrap 5 for styling.
 
