@@ -16,13 +16,10 @@ This is a fork of my original project that replaces the local database with fetc
 
 An Endless Quiz App that provides infinite quiz questions alongside a stats page to keep track of your progress. 
 
-## To-do
-- Prevent manually refreshing from changing question
-    - could be done by preventing a question from being checked as "completed" only when answered
-- Add more questions and integrate the scoring into a separate window/on screen elsewhere
-- Beautify UI more (particularly buttons)
-- Add unit testing and proper logging
-- Add proper comments
+## Technical Info
+- Backend entirely with Django
+- Frontend made with Django Templates, featuring HTML, CSS, Bootstrap 5 CSS library, and limited JavaScript for styling
+- Accountless progress saving, all progress is saved by the Django session and is persistent across browser restarts
 
 ## Installation
 
